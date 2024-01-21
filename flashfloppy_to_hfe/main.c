@@ -542,12 +542,18 @@ uint32_t nco_715k(uint16_t *ff_samples, size_t ff_sample_count, uint32_t *bc_buf
         prev_bc_left = curr_bc_left;
         curr_bc_left += bc_step;
 
-        phase_integral += phase_error / 256;
-        int32_t phase_proportional = phase_error / 8;
+        // Accumulate error into integral, saturing as necessary
+        if (phase_integral > 0 && phase_error > INT32_MAX - phase_integral) {
+            phase_integral = INT32_MAX;
+        } else if (phase_integral < 0 && phase_error < INT32_MIN - phase_integral) {
+            phase_integral = INT32_MIN;
+        } else {
+            phase_integral += phase_error;
+        }
 
-        //printf("P: %10d I: %10d ", phase_proportional, phase_integral);
+        //printf("P: %10d I: %10d ", phase_error/8, phase_integral/256);
 
-        phase_step = (uint32_t)((int32_t)(1 << 16) + phase_integral + phase_proportional);
+        phase_step = (uint32_t)((int32_t)(1 << 16) + phase_integral/256 + phase_error/8);
 
         //printf("Phase step: %10u\n", phase_step);
     }
@@ -667,12 +673,18 @@ uint32_t nco_358k(uint16_t *ff_samples, size_t ff_sample_count, uint32_t *bc_buf
         prev_bc_left = curr_bc_left;
         curr_bc_left += bc_step;
 
-        phase_integral += phase_error / 1024;
-        int32_t phase_proportional = phase_error / 16;
+        // Accumulate error into integral, saturing as necessary
+        if (phase_integral > 0 && phase_error > INT32_MAX - phase_integral) {
+            phase_integral = INT32_MAX;
+        } else if (phase_integral < 0 && phase_error < INT32_MIN - phase_integral) {
+            phase_integral = INT32_MIN;
+        } else {
+            phase_integral += phase_error;
+        }
 
-        //printf("P: %10d I: %10d ", phase_proportional, phase_integral);
+        //printf("P: %10d I: %10d ", phase_error/16, phase_integral/1024);
 
-        phase_step = (uint32_t)((int32_t)(1 << 16) + phase_integral + phase_proportional);
+        phase_step = (uint32_t)((int32_t)(1 << 16) + phase_integral/1024 + phase_error/16);
 
         //printf("Phase step: %10u\n", phase_step);
     }
