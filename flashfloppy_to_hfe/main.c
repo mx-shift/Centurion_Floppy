@@ -12,6 +12,7 @@
 #include "ff_master.h"
 #include "ff_master_greaseweazle_default_pll.h"
 #include "ff_master_greaseweazle_fallback_pll.h"
+#include "nco_178k.h"
 #include "nco_358k.h"
 #include "nco_715k.h"
 
@@ -29,6 +30,7 @@ static struct algorithm ALGS[] = {
     {"fdc9216", fdc9216},
     {"nco_715k", nco_715k},
     {"nco_358k", nco_358k},
+    {"nco_178k", nco_178k},
     {NULL, NULL},
 };
 
