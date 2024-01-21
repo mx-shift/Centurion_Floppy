@@ -1,5 +1,5 @@
-all: main.c
-	$(CC) -Wall -o flashfloppy_to_hfe $<
+flashfloppy_to_hfe: *.c
+	$(CC) -Wall -o $@ $^
 
 clean:
 	rm flashfloppy_to_hfe
