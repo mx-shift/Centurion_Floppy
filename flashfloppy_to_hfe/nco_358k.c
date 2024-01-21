@@ -4,11 +4,8 @@
 
 #include "nco_358k.h"
 
-uint32_t nco_358k(uint16_t *ff_samples, size_t ff_sample_count, uint32_t *bc_buf, uint32_t bc_bufmask)
+uint32_t nco_358k(uint16_t write_bc_ticks, uint16_t *ff_samples, size_t ff_sample_count, uint32_t *bc_buf, uint32_t bc_bufmask)
 {
-    // image struct
-    uint16_t write_bc_ticks = 72;
-
     // dma_wr struct
     uint32_t phase_step;
     int32_t phase_integral;

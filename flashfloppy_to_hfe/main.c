@@ -19,7 +19,7 @@
 struct algorithm
 {
     const char *name;
-    uint32_t (*func)(uint16_t *ff_samples, size_t ff_sample_count, uint32_t *bc_buf, uint32_t bc_buf_mask);
+    uint32_t (*func)(uint16_t write_bc_ticks, uint16_t *ff_samples, size_t ff_sample_count, uint32_t *bc_buf, uint32_t bc_buf_mask);
 };
 
 static struct algorithm ALGS[] = {
@@ -36,7 +36,7 @@ static struct algorithm ALGS[] = {
 
 void usage(const char *const progname)
 {
-    fprintf(stderr, "Usage: %s <ff_samples> <hfe_out> <algorithm>\n", progname);
+    fprintf(stderr, "Usage: %s <ff_samples> <hfe_out> <hfe-bit-rate-kbps> <algorithm>\n", progname);
     fprintf(stderr, "\n");
     fprintf(stderr, "Algorithms:\n");
 
@@ -50,14 +50,15 @@ void usage(const char *const progname)
 
 int main(int argc, const char *const argv[])
 {
-    if (argc < 4)
+    if (argc < 5)
     {
         usage(argv[0]);
     }
 
     const char *const ff_sample_path = argv[1];
     const char *const hfe_path = argv[2];
-    const char *const algorithm = argv[3];
+    unsigned long hfe_bit_rate_kbps = strtoul(argv[3], NULL, 10);
+    const char *const algorithm = argv[4];
 
     // Open sample input file
     FILE *ff_sample_fd = fopen(ff_sample_path, "rb");
@@ -129,8 +130,9 @@ int main(int argc, const char *const argv[])
         return 1;
     }
 
-    printf("Running %s\n", alg->name);
-    uint32_t bc_prod = alg->func(ff_samples, ff_sample_count, bc_buf, bc_bufmask);
+    uint16_t write_bc_ticks = (500*72) / hfe_bit_rate_kbps;
+    printf("Running %s with write_bc_ticks=%hu\n", alg->name, write_bc_ticks);
+    uint32_t bc_prod = alg->func((uint16_t)write_bc_ticks, ff_samples, ff_sample_count, bc_buf, bc_bufmask);
 
     if (bc_prod / 4 >= BC_BUF_SIZE_BYTES)
     {
@@ -164,7 +166,7 @@ int main(int argc, const char *const argv[])
         /* Number of tracks */ 0x1,
         /* Number of sides */ 0x1,
         /* Track encoding */ 0xFF /* Unknown */,
-        /* Bitrate (kpbs) */ 0xf4,
+        /* Bitrate (kbps) */ hfe_bit_rate_kbps,
         0x01, /* 500 */
         /* RPM */ 0x00,
         0x00,

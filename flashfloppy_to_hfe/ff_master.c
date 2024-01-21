@@ -3,10 +3,10 @@
 
 #include "ff_master.h"
 
-uint32_t ff_master(uint16_t *ff_samples, size_t ff_sample_count, uint32_t *bc_buf, uint32_t bc_bufmask)
+uint32_t ff_master(uint16_t write_bc_ticks, uint16_t *ff_samples, size_t ff_sample_count, uint32_t *bc_buf, uint32_t bc_bufmask)
 {
     /* FlashFloppy master */
-    int cell = 72;
+    int cell = write_bc_ticks;
 
     uint16_t prev = 0;
     uint32_t bc_prod = 0;

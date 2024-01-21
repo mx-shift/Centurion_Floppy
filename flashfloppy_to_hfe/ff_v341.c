@@ -3,10 +3,10 @@
 
 #include "ff_v341.h"
 
-uint32_t ff_v341(uint16_t *ff_samples, size_t ff_sample_count, uint32_t *bc_buf, uint32_t bc_bufmask)
+uint32_t ff_v341(uint16_t write_bc_ticks, uint16_t *ff_samples, size_t ff_sample_count, uint32_t *bc_buf, uint32_t bc_bufmask)
 {
     /* FlashFloppy v3.41 */
-    uint16_t cell = 72;
+    uint16_t cell = write_bc_ticks;
     uint16_t window = cell + (cell >> 1);
 
     uint16_t prev = 0;

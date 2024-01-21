@@ -4,11 +4,9 @@
 
 #include "fdc9216.h"
 
-uint32_t fdc9216(uint16_t *ff_samples, size_t ff_sample_count, uint32_t *bc_buf, uint32_t bc_bufmask)
+uint32_t fdc9216(uint16_t write_bc_ticks, uint16_t *ff_samples, size_t ff_sample_count, uint32_t *bc_buf, uint32_t bc_bufmask)
 {
     // A PLL that actually adjusts phase gradually
-
-    uint16_t write_bc_ticks = 72;
 
     // Things that happen when write-enable is asserted.
     uint32_t write_pll_period = (uint32_t)write_bc_ticks << 16; // write_bc_ticks

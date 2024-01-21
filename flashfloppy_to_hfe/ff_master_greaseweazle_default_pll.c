@@ -4,10 +4,10 @@
 
 #include "ff_master_greaseweazle_default_pll.h"
 
-uint32_t ff_master_greaseweazle_default_pll(uint16_t *ff_samples, size_t ff_sample_count, uint32_t *bc_buf, uint32_t bc_bufmask)
+uint32_t ff_master_greaseweazle_default_pll(uint16_t write_bc_ticks, uint16_t *ff_samples, size_t ff_sample_count, uint32_t *bc_buf, uint32_t bc_bufmask)
 {
     /* FlashFloppy master w/ Greaseweazle's Default PLL */
-    int cell_nominal = 72;
+    int cell_nominal = write_bc_ticks;
     int cell_min = cell_nominal - (cell_nominal * 10 / 100);
     int cell_max = cell_nominal + (cell_nominal * 10 / 100);
 
