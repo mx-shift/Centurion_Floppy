@@ -39,7 +39,7 @@ for PRECOMP in 0 300 350 400; do
   ${KRYOFLUX_TO_FLASHFLOPPY_BIN} \
     --out-dir ${FF_SAMPLE_DIR} \
     --write-precomp-ns ${PRECOMP} \
-    ${KRYO}/${BASE}_00.0.raw
+    ${KRYO}/${BASE}*00.0.raw
 
   HFE_DIR=${BASE}.${PRECOMP}ns.${ALG}.hfe
   mkdir -p ${HFE_DIR}
