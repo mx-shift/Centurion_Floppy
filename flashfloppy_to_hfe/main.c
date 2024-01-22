@@ -15,6 +15,13 @@
 #include "nco_178k.h"
 #include "nco_358k.h"
 #include "nco_715k.h"
+#include "nco_1440k_0p2.h"
+#include "nco_1440k_0p25.h"
+#include "nco_2160k_0p1.h"
+#include "nco_2160k_0p2.h"
+#include "nco_2160k_0p25.h"
+#include "nco_2160k_0p5.h"
+#include "nco_2160k_1p0.h"
 
 struct algorithm
 {
@@ -31,6 +38,13 @@ static struct algorithm ALGS[] = {
     {"nco_715k", nco_715k},
     {"nco_358k", nco_358k},
     {"nco_178k", nco_178k},
+    {"nco_1440k_0p2", nco_1440k_0p2},
+    {"nco_1440k_0p25", nco_1440k_0p25},
+    {"nco_2160k_0p1", nco_2160k_0p1},
+    {"nco_2160k_0p2", nco_2160k_0p2},
+    {"nco_2160k_0p25", nco_2160k_0p25},
+    {"nco_2160k_0p5", nco_2160k_0p5},
+    {"nco_2160k_1p0", nco_2160k_1p0},
     {NULL, NULL},
 };
 
