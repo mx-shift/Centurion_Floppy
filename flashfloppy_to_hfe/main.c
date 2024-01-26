@@ -22,6 +22,7 @@
 #include "nco_2160k_0p25.h"
 #include "nco_2160k_0p5.h"
 #include "nco_2160k_1p0.h"
+#include "nco_generic.h"
 
 struct algorithm
 {
@@ -127,34 +128,46 @@ int main(int argc, const char *const argv[])
 
     uint32_t *bc_buf = malloc(BC_BUF_SIZE_BYTES);
     uint32_t bc_bufmask = (BC_BUF_SIZE_BYTES / 4) - 1;
-
-    struct algorithm *alg = ALGS;
-    while (alg->name != NULL)
-    {
-        if (strcmp(algorithm, alg->name) == 0)
-        {
-            break;
-        }
-        alg += 1;
-    }
-
-    if (alg->name == NULL)
-    {
-        fprintf(stderr, "Unknown algorithm: %s\n", algorithm);
-        return 1;
-    }
-
     uint16_t write_bc_ticks = (500*72) / hfe_bit_rate_kbps;
-    printf("Running %s with write_bc_ticks=%hu\n", alg->name, write_bc_ticks);
-    uint32_t bc_prod = alg->func((uint16_t)write_bc_ticks, ff_samples, ff_sample_count, bc_buf, bc_bufmask);
+    uint32_t bc_prod;
 
+    if (!strncmp(algorithm, "nco[", 4)) {
+        char *p = (char *)algorithm + 4;
+        int integral_div, error_div;
+        integral_div = strtol(p, &p, 10);
+        error_div = strtol(p+1, &p, 10);
+        printf("NCO: Integral/%d, Error/%d\n", integral_div, error_div);
+        bc_prod = nco_generic((uint16_t)write_bc_ticks, ff_samples, ff_sample_count, bc_buf, bc_bufmask, integral_div, error_div);
+    } else {
+
+        struct algorithm *alg = ALGS;
+        while (alg->name != NULL)
+        {
+            if (strcmp(algorithm, alg->name) == 0)
+            {
+                break;
+            }
+            alg += 1;
+        }
+
+        if (alg->name == NULL)
+        {
+            fprintf(stderr, "Unknown algorithm: %s\n", algorithm);
+            return 1;
+        }
+
+        printf("Running %s with write_bc_ticks=%hu\n", alg->name, write_bc_ticks);
+        bc_prod = alg->func((uint16_t)write_bc_ticks, ff_samples, ff_sample_count, bc_buf, bc_bufmask);
+
+    }
+
+    printf("Decoded %u bitcells\n", bc_prod);
     if (bc_prod / 4 >= BC_BUF_SIZE_BYTES)
     {
         fprintf(stderr, "ERROR: decoded more bitcells than buffer space\n");
         return 1;
     }
 
-    printf("Decoded %u bitcells\n", bc_prod);
     /* Round up to next byte and word in case last byte is partial */
     size_t bc_bytes = (bc_prod + 7) / 8;
     size_t bc_words = bc_bytes / 4;
