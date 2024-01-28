@@ -40,3 +40,8 @@ uint32_t ff_master(uint16_t write_bc_ticks, uint16_t *ff_samples, size_t ff_samp
     bc_buf[(bc_prod / 32) & bc_bufmask] = htobe32(bc_dat << (-bc_prod & 31));
     return bc_prod;
 }
+
+struct algorithm algorithm_ff_master = {
+    .name = "ff_master",
+    .func = ff_master,
+};

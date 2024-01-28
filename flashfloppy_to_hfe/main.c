@@ -7,6 +7,8 @@
 
 #define BC_BUF_SIZE_BYTES (2 * 1024 * 1024)
 
+#include "algorithm.h"
+
 #include "fdc9216.h"
 #include "ff_v341.h"
 #include "ff_master.h"
@@ -24,30 +26,24 @@
 #include "nco_2160k_1p0.h"
 #include "nco_generic.h"
 
-struct algorithm
-{
-    const char *name;
-    uint32_t (*func)(uint16_t write_bc_ticks, uint16_t *ff_samples, size_t ff_sample_count, uint32_t *bc_buf, uint32_t bc_buf_mask);
+static struct algorithm *ALGS[] = {
+    &algorithm_ff_v341,
+    &algorithm_ff_master,
+    &algorithm_ff_master_greaseweazle_default_pll,
+    &algorithm_ff_master_greaseweazle_fallback_pll,
+    &algorithm_fdc9216,
+    &algorithm_nco_178k,
+    &algorithm_nco_358k,
+    &algorithm_nco_715k,
+    &algorithm_nco_1440k_0p2,
+    &algorithm_nco_1440k_0p25,
+    &algorithm_nco_2160k_0p1,
+    &algorithm_nco_2160k_0p2,
+    &algorithm_nco_2160k_0p25,
+    &algorithm_nco_2160k_0p5,
+    &algorithm_nco_2160k_1p0,
 };
-
-static struct algorithm ALGS[] = {
-    {"ff_v341", &ff_v341},
-    {"ff_master", &ff_master},
-    {"ff_master_greaseweazle_default_pll", ff_master_greaseweazle_default_pll},
-    {"ff_master_greaseweazle_fallback_pll", ff_master_greaseweazle_fallback_pll},
-    {"fdc9216", fdc9216},
-    {"nco_715k", nco_715k},
-    {"nco_358k", nco_358k},
-    {"nco_178k", nco_178k},
-    {"nco_1440k_0p2", nco_1440k_0p2},
-    {"nco_1440k_0p25", nco_1440k_0p25},
-    {"nco_2160k_0p1", nco_2160k_0p1},
-    {"nco_2160k_0p2", nco_2160k_0p2},
-    {"nco_2160k_0p25", nco_2160k_0p25},
-    {"nco_2160k_0p5", nco_2160k_0p5},
-    {"nco_2160k_1p0", nco_2160k_1p0},
-    {NULL, NULL},
-};
+static size_t ALGS_COUNT = sizeof(ALGS)/sizeof(ALGS[0]);
 
 void usage(const char *const progname)
 {
@@ -55,8 +51,9 @@ void usage(const char *const progname)
     fprintf(stderr, "\n");
     fprintf(stderr, "Algorithms:\n");
 
-    for (struct algorithm *alg = ALGS; alg->name != NULL; alg += 1)
+    for (int ii = 0; ii < ALGS_COUNT; ++ii)
     {
+        struct algorithm *alg = ALGS[ii];
         fprintf(stderr, "\t* %s\n", alg->name);
     }
 
@@ -139,18 +136,18 @@ int main(int argc, const char *const argv[])
         printf("NCO: Integral/%d, Error/%d\n", integral_div, error_div);
         bc_prod = nco_generic((uint16_t)write_bc_ticks, ff_samples, ff_sample_count, bc_buf, bc_bufmask, integral_div, error_div);
     } else {
-
-        struct algorithm *alg = ALGS;
-        while (alg->name != NULL)
+        struct algorithm *alg = NULL;
+ 
+        for (int ii = 0; ii < ALGS_COUNT; ++ii)
         {
-            if (strcmp(algorithm, alg->name) == 0)
+            if (strcmp(algorithm, ALGS[ii]->name) == 0)
             {
+                alg = ALGS[ii];
                 break;
             }
-            alg += 1;
         }
 
-        if (alg->name == NULL)
+        if (alg == NULL)
         {
             fprintf(stderr, "Unknown algorithm: %s\n", algorithm);
             return 1;

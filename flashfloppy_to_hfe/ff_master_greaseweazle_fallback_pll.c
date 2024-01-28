@@ -80,3 +80,8 @@ uint32_t ff_master_greaseweazle_fallback_pll(uint16_t write_bc_ticks, uint16_t *
     bc_buf[(bc_prod / 32) & bc_bufmask] = htobe32(bc_dat << (-bc_prod & 31));
     return bc_prod;
 }
+
+struct algorithm algorithm_ff_master_greaseweazle_fallback_pll = {
+    .name = "ff_master_greaseweazle_fallback_pll",
+    .func = ff_master_greaseweazle_fallback_pll,
+};

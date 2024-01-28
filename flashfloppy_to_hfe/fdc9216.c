@@ -133,3 +133,8 @@ uint32_t fdc9216(uint16_t write_bc_ticks, uint16_t *ff_samples, size_t ff_sample
     bc_buf[(bc_prod / 32) & bc_bufmask] = htobe32(bc_dat << (-bc_prod & 31));
     return bc_prod;
 }
+
+struct algorithm algorithm_fdc9216 = {
+    .name = "fdc9216",
+    .func = fdc9216,
+};

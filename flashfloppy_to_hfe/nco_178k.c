@@ -136,3 +136,8 @@ uint32_t nco_178k(uint16_t write_bc_ticks, uint16_t *ff_samples, size_t ff_sampl
     bc_buf[(bc_prod / 32) & bc_bufmask] = htobe32(bc_dat << (-bc_prod & 31));
     return bc_prod;
 }
+
+struct algorithm algorithm_nco_178k = {
+    .name = "nco_178k",
+    .func = nco_178k,
+};

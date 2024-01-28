@@ -37,3 +37,8 @@ uint32_t ff_v341(uint16_t write_bc_ticks, uint16_t *ff_samples, size_t ff_sample
 
     return bc_prod;
 }
+
+struct algorithm algorithm_ff_v341 = {
+    .name = "ff_v341",
+    .func = ff_v341,
+};

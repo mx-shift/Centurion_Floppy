@@ -132,3 +132,8 @@ uint32_t nco_1440k_0p25(uint16_t write_bc_ticks, uint16_t *ff_samples, size_t ff
     bc_buf[(bc_prod / 32) & bc_bufmask] = htobe32(bc_dat << (-bc_prod & 31));
     return bc_prod;
 }
+
+struct algorithm algorithm_nco_1440k_0p25 = {
+    .name = "nco_1440k_0p25",
+    .func = nco_1440k_0p25,
+};
