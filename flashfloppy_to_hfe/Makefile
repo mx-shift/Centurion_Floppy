@@ -1,8 +1,13 @@
 CFLAGS=-std=gnu99 -Wall -Werror
 
-flashfloppy_to_hfe: *.c
+SRCS := $(wildcard *.c)
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+flashfloppy_to_hfe: $(SRCS:.c=.o)
 	$(CC) $(CFLAGS) -o $@ $^
 
 clean:
-	rm -f flashfloppy_to_hfe
+	rm -f flashfloppy_to_hfe *.o
 .PHONY: clean
