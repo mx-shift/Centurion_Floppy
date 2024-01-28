@@ -4,4 +4,5 @@ flashfloppy_to_hfe: *.c
 	$(CC) $(CFLAGS) -o $@ $^
 
 clean:
-	rm flashfloppy_to_hfe
+	rm -f flashfloppy_to_hfe
+.PHONY: clean
