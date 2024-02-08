@@ -4,7 +4,7 @@
 
 #include "algorithm_greaseweazle_fallback_pll.h"
 
-uint32_t greaseweazle_fallback_pll(
+static uint32_t greaseweazle_fallback_pll(
     uint16_t write_bc_ticks,
     uint16_t *ff_samples,
     size_t ff_sample_count,

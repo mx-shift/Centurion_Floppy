@@ -3,7 +3,7 @@
 
 #include "algorithm_flashfloppy_v341.h"
 
-uint32_t flashfloppy_v341(
+static uint32_t flashfloppy_v341(
     uint16_t write_bc_ticks,
     uint16_t *ff_samples,
     size_t ff_sample_count,

@@ -3,7 +3,7 @@
 
 #include "algorithm_flashfloppy_master.h"
 
-uint32_t flashfloppy_master(
+static uint32_t flashfloppy_master(
     uint16_t write_bc_ticks,
     uint16_t *ff_samples,
     size_t ff_sample_count,

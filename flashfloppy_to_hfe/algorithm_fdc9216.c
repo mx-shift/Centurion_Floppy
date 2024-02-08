@@ -4,7 +4,7 @@
 
 #include "algorithm_fdc9216.h"
 
-uint32_t fdc9216(
+static uint32_t fdc9216(
     uint16_t write_bc_ticks,
     uint16_t *ff_samples,
     size_t ff_sample_count,
