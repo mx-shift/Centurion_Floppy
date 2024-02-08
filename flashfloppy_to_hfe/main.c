@@ -176,6 +176,11 @@ int main(int argc, const char *const argv[])
     }
 
     printf("Decoded %u bitcells\n", bc_prod);
+
+    if (bc_prod == 0) {
+        return 0;
+    }
+
     if (bc_prod / 4 >= BC_BUF_SIZE_BYTES)
     {
         fprintf(stderr, "ERROR: decoded more bitcells than buffer space\n");
