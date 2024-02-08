@@ -1,5 +1,5 @@
-#ifndef NCO_V1_H_
-#define NCO_V1_H_
+#ifndef ALGORITHM_NCO_V1_H_
+#define ALGORITHM_NCO_V1_H_
 
 #include "algorithm.h"
 

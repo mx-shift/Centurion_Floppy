@@ -1,5 +1,5 @@
-#ifndef FDC9216_H_
-#define FDC9216_H_
+#ifndef ALGORITHM_FDC9216_H_
+#define ALGORITHM_FDC9216_H_
 
 #include "algorithm.h"
 

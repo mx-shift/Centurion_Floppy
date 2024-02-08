@@ -1,4 +1,4 @@
-#include "nco_v1.h"
+#include "algorithm_nco_v1.h"
 
 #include <stdio.h>
 #include <string.h>

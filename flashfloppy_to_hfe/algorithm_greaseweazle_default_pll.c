@@ -2,9 +2,9 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include "ff_master_greaseweazle_fallback_pll.h"
+#include "algorithm_greaseweazle_default_pll.h"
 
-uint32_t ff_master_greaseweazle_fallback_pll(uint16_t write_bc_ticks, uint16_t *ff_samples, size_t ff_sample_count, uint32_t *bc_buf, uint32_t bc_bufmask, struct kv_pair *params)
+uint32_t greaseweazle_default_pll(uint16_t write_bc_ticks, uint16_t *ff_samples, size_t ff_sample_count, uint32_t *bc_buf, uint32_t bc_bufmask, struct kv_pair *params)
 {
     /* FlashFloppy master w/ Greaseweazle's Default PLL */
     int cell_nominal = write_bc_ticks;
@@ -50,7 +50,7 @@ uint32_t ff_master_greaseweazle_fallback_pll(uint16_t write_bc_ticks, uint16_t *
         if (zeros <= 3)
         {
             // In sync: adjust clock by a fraction of the phase mismatch.
-            int adj_amount = curr * 1 / 100;
+            int adj_amount = curr * 5 / 100;
 
             cell += adj_amount;
             printf("In Sync: adjusting clock by %d ticks to %d\n", adj_amount, cell);
@@ -58,7 +58,7 @@ uint32_t ff_master_greaseweazle_fallback_pll(uint16_t write_bc_ticks, uint16_t *
         else
         {
             // Out of sync: adjust clock towards centre.
-            int adj_amount = (cell_nominal - cell) * 1 / 100;
+            int adj_amount = (cell_nominal - cell) * 5 / 100;
 
             cell += adj_amount;
             printf("Out of Sync: adjusting clock by %d ticks to %d\n", adj_amount, cell);
@@ -81,8 +81,8 @@ uint32_t ff_master_greaseweazle_fallback_pll(uint16_t write_bc_ticks, uint16_t *
     return bc_prod;
 }
 
-struct algorithm algorithm_ff_master_greaseweazle_fallback_pll = {
-    .name = "ff_master_greaseweazle_fallback_pll",
-    .func = ff_master_greaseweazle_fallback_pll,
+struct algorithm algorithm_greaseweazle_default_pll = {
+    .name = "greaseweazle_default_pll",
+    .func = greaseweazle_default_pll,
     .params = NULL,
 };

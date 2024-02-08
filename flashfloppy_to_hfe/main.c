@@ -10,19 +10,19 @@
 #include "algorithm.h"
 #include "kv_pair.h"
 
-#include "fdc9216.h"
-#include "ff_v341.h"
-#include "ff_master.h"
-#include "ff_master_greaseweazle_default_pll.h"
-#include "ff_master_greaseweazle_fallback_pll.h"
-#include "nco_v1.h"
+#include "algorithm_fdc9216.h"
+#include "algorithm_flashfloppy_v341.h"
+#include "algorithm_flashfloppy_master.h"
+#include "algorithm_greaseweazle_default_pll.h"
+#include "algorithm_greaseweazle_fallback_pll.h"
+#include "algorithm_nco_v1.h"
 
 static struct algorithm *ALGS[] = {
-    &algorithm_ff_v341,
-    &algorithm_ff_master,
-    &algorithm_ff_master_greaseweazle_default_pll,
-    &algorithm_ff_master_greaseweazle_fallback_pll,
     &algorithm_fdc9216,
+    &algorithm_flashfloppy_v341,
+    &algorithm_flashfloppy_master,
+    &algorithm_greaseweazle_default_pll,
+    &algorithm_greaseweazle_fallback_pll,
     &algorithm_nco_v1,
     NULL
 };
