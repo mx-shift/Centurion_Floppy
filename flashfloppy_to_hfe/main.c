@@ -42,8 +42,8 @@ static struct algorithm *ALGS[] = {
     &algorithm_nco_2160k_0p25,
     &algorithm_nco_2160k_0p5,
     &algorithm_nco_2160k_1p0,
+    NULL
 };
-static size_t ALGS_COUNT = sizeof(ALGS)/sizeof(ALGS[0]);
 
 void usage(const char *const progname)
 {
@@ -51,10 +51,9 @@ void usage(const char *const progname)
     fprintf(stderr, "\n");
     fprintf(stderr, "Algorithms:\n");
 
-    for (int ii = 0; ii < ALGS_COUNT; ++ii)
+    for (struct algorithm **alg = ALGS; *alg != NULL; ++alg)
     {
-        struct algorithm *alg = ALGS[ii];
-        fprintf(stderr, "\t* %s\n", alg->name);
+        fprintf(stderr, "\t* %s\n", (*alg)->name);
     }
 
     exit(1);
@@ -136,25 +135,24 @@ int main(int argc, const char *const argv[])
         printf("NCO: Integral/%d, Error/%d\n", integral_div, error_div);
         bc_prod = nco_generic((uint16_t)write_bc_ticks, ff_samples, ff_sample_count, bc_buf, bc_bufmask, integral_div, error_div);
     } else {
-        struct algorithm *alg = NULL;
+        struct algorithm **alg = NULL;
  
-        for (int ii = 0; ii < ALGS_COUNT; ++ii)
+        for (alg = ALGS; *alg != NULL; ++alg)
         {
-            if (strcmp(algorithm, ALGS[ii]->name) == 0)
+            if (strcmp(algorithm, (*alg)->name) == 0)
             {
-                alg = ALGS[ii];
                 break;
             }
         }
 
-        if (alg == NULL)
+        if (*alg == NULL)
         {
             fprintf(stderr, "Unknown algorithm: %s\n", algorithm);
             return 1;
         }
 
-        printf("Running %s with write_bc_ticks=%hu\n", alg->name, write_bc_ticks);
-        bc_prod = alg->func((uint16_t)write_bc_ticks, ff_samples, ff_sample_count, bc_buf, bc_bufmask);
+        printf("Running %s with write_bc_ticks=%hu\n", (*alg)->name, write_bc_ticks);
+        bc_prod = (*alg)->func((uint16_t)write_bc_ticks, ff_samples, ff_sample_count, bc_buf, bc_bufmask);
 
     }
 
