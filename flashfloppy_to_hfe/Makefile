@@ -8,17 +8,7 @@ ALGORITHMS_SRCS := \
 	ff_master_greaseweazle_fallback_pll.c \
 	ff_master.c \
 	ff_v341.c \
-	nco_178k.c \
-	nco_358k.c \
-	nco_715k.c \
-	nco_1440k_0p2.c \
-	nco_1440k_0p25.c \
-	nco_2160k_0p1.c \
-	nco_2160k_0p2.c \
-	nco_2160k_0p5.c \
-	nco_2160k_0p25.c \
-	nco_2160k_1p0.c \
-	nco_generic.c
+	nco_v1.c
 
 BINS=flashfloppy_to_hfe kv_test
 

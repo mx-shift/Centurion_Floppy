@@ -1,37 +1,69 @@
-#include <stdint.h>
-#include <stdlib.h>
+#include "nco_v1.h"
+
 #include <stdio.h>
+#include <string.h>
 
-#include "nco_715k.h"
+static int parse_param_integer(const char *value, int *dst) {
+    if (value == NULL) return -1;
+    if (*value == '\0') return -1;
 
-uint32_t nco_715k(uint16_t write_bc_ticks, uint16_t *ff_samples, size_t ff_sample_count, uint32_t *bc_buf, uint32_t bc_bufmask, struct kv_pair *params)
-{
+    char *endptr = NULL;
+    *dst = strtol(value, &endptr, 10);
+    if (*endptr != '\0') return -1;
+
+    // Only allow positive integers and zero
+    if (*dst < 0) return -1;
+
+    return 0;
+}
+
+static uint32_t nco_v1(uint16_t write_bc_ticks, uint16_t *ff_samples, size_t ff_sample_count, uint32_t *bc_buf, uint32_t bc_bufmask, struct kv_pair *params) {
+    int p_mul = -1;
+    int p_div = -1;
+    int i_mul = -1;
+    int i_div = -1;
+
+    for (
+        struct kv_pair *param = params;
+        param != NULL && param->key != NULL;
+        ++param
+    ) {
+        if (strcmp(param->key, "p_mul") == 0) {
+            if (parse_param_integer(param->value, &p_mul) < 0) {
+                fprintf(stderr, "nco parameter %s must be a positive integer\n", param->key);
+                return 0;
+            }
+        } else if (strcmp(param->key, "p_div") == 0) {
+            if (parse_param_integer(param->value, &p_div) < 0) {
+                fprintf(stderr, "nco parameter %s must be a positive integer\n", param->key);
+                return 0;
+            }
+        } else if (strcmp(param->key, "i_mul") == 0) {
+            if (parse_param_integer(param->value, &i_mul) < 0) {
+                fprintf(stderr, "nco parameter %s must be a positive integer\n", param->key);
+                return 0;
+            }
+        } else if (strcmp(param->key, "i_div") == 0) {
+            if (parse_param_integer(param->value, &i_div) < 0) {
+                fprintf(stderr, "nco parameter %s must be a positive integer\n", param->key);
+                return 0;
+            }
+        } else {
+            fprintf(stderr, "nco: unknown parameter %s\n", param->key);
+        }
+    }
+
+    if (p_mul == -1 || p_div == -1 || i_mul == -1 || i_div == -1) {
+        fprintf(stderr, "nco_v1: required parameters not set\n");
+        return 0;
+    }
+
     // dma_wr struct
     uint32_t phase_step;
     int32_t phase_integral;
     uint32_t prev_bc_left;
     uint32_t curr_bc_left;
 
-    // zeta = (loop dampening coefficient)
-    // f_n = (loop natural frequency)
-    // f_s = (NCO base frequency)
-    // k_p = (phase detector gain)
-    // k_nco = (NCO feedback scaler)
-
-    // w_n = f_n * 2 * pi
-    // Ts = 1 / f_s
-    // k_l = 2 * zeta * w_n * Ts / (k_p * k_nco)
-    // k_i = w_n^2 * Ts^2 / (k_p * k_nco)
-
-    // Constants
-    // zeta = 1
-    // f_s = 72,000,000 Hz
-    // k_p = 1.0
-    // k_nco = 1.0
-
-    // f_n = 715,000 Hz
-    // k_l = 0.125   = 1/8
-    // k_i = 0.003893  = 1/256
 
     // Things that happen when write-enable is asserted.
     phase_step = 1 << 16;
@@ -75,7 +107,6 @@ uint32_t nco_715k(uint16_t write_bc_ticks, uint16_t *ff_samples, size_t ff_sampl
 
         //printf("Curr bc: %10u (%8x) Dist: %10d (%8.3f) ", curr_bc_left, curr_bc_left,
         //       distance_from_curr_bc_left, (double)distance_from_curr_bc_left / 65536.0);
-
 
         // Record zeros for each bitcell that passed before this pulse
         int zeros = 0;
@@ -122,9 +153,13 @@ uint32_t nco_715k(uint16_t write_bc_ticks, uint16_t *ff_samples, size_t ff_sampl
             phase_integral += phase_error;
         }
 
-        //printf("P: %10d I: %10d ", phase_error/8, phase_integral/256);
+        //printf("P: %10d I: %10d ", phase_error/16, phase_integral/1024);
 
-        phase_step = (uint32_t)((int32_t)(1 << 16) + phase_integral/256 + phase_error/8);
+        phase_step = (uint32_t)(
+            (int32_t)(1 << 16)
+            + (phase_error * p_mul / p_div)
+            + (phase_integral * i_mul / i_div)
+        );
 
         //printf("Phase step: %10u\n", phase_step);
     }
@@ -133,8 +168,16 @@ uint32_t nco_715k(uint16_t write_bc_ticks, uint16_t *ff_samples, size_t ff_sampl
     return bc_prod;
 }
 
-struct algorithm algorithm_nco_715k = {
-    .name = "nco_715k",
-    .func = nco_715k,
-    .params = NULL,
+static struct parameter nco_v1_params[] = {
+    {.name = "p_mul", .required = 1, .description = "f"},
+    {.name = "p_div", .required = 1, .description = ""},
+    {.name = "i_mul", .required = 1, .description = ""},
+    {.name = "i_div", .required = 1, .description = ""},
+    {.name = NULL, .description = NULL }
+};
+
+struct algorithm algorithm_nco_v1 = {
+    .name = "nco_v1",
+    .func = nco_v1,
+    .params = nco_v1_params,
 };

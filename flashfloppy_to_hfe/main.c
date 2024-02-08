@@ -15,17 +15,7 @@
 #include "ff_master.h"
 #include "ff_master_greaseweazle_default_pll.h"
 #include "ff_master_greaseweazle_fallback_pll.h"
-#include "nco_178k.h"
-#include "nco_358k.h"
-#include "nco_715k.h"
-#include "nco_1440k_0p2.h"
-#include "nco_1440k_0p25.h"
-#include "nco_2160k_0p1.h"
-#include "nco_2160k_0p2.h"
-#include "nco_2160k_0p25.h"
-#include "nco_2160k_0p5.h"
-#include "nco_2160k_1p0.h"
-#include "nco_generic.h"
+#include "nco_v1.h"
 
 static struct algorithm *ALGS[] = {
     &algorithm_ff_v341,
@@ -33,16 +23,7 @@ static struct algorithm *ALGS[] = {
     &algorithm_ff_master_greaseweazle_default_pll,
     &algorithm_ff_master_greaseweazle_fallback_pll,
     &algorithm_fdc9216,
-    &algorithm_nco_178k,
-    &algorithm_nco_358k,
-    &algorithm_nco_715k,
-    &algorithm_nco_1440k_0p2,
-    &algorithm_nco_1440k_0p25,
-    &algorithm_nco_2160k_0p1,
-    &algorithm_nco_2160k_0p2,
-    &algorithm_nco_2160k_0p25,
-    &algorithm_nco_2160k_0p5,
-    &algorithm_nco_2160k_1p0,
+    &algorithm_nco_v1,
     NULL
 };
 
@@ -138,42 +119,33 @@ int main(int argc, const char *const argv[])
     uint16_t write_bc_ticks = (500*72) / hfe_bit_rate_kbps;
     uint32_t bc_prod;
 
-    if (!strncmp(algorithm, "nco[", 4)) {
-        char *p = (char *)algorithm + 4;
-        int integral_div, error_div;
-        integral_div = strtol(p, &p, 10);
-        error_div = strtol(p+1, &p, 10);
-        printf("NCO: Integral/%d, Error/%d\n", integral_div, error_div);
-        bc_prod = nco_generic((uint16_t)write_bc_ticks, ff_samples, ff_sample_count, bc_buf, bc_bufmask, integral_div, error_div);
-    } else {
-        struct kv_pair *algorithm_params = NULL;
+    struct kv_pair *algorithm_params = NULL;
 
-        char *param_start = strchr(algorithm, '[');
-        char *param_end = strrchr(algorithm, ']');
-        if (param_start != NULL && param_end != NULL) {
-            *param_start = '\0';
-            *param_end = '\0';
+    char *param_start = strchr(algorithm, '[');
+    char *param_end = strrchr(algorithm, ']');
+    if (param_start != NULL && param_end != NULL) {
+        *param_start = '\0';
+        *param_end = '\0';
 
-            param_start++;
+        param_start++;
 
-            algorithm_params = kv_pair_list_from_string(param_start);
-        }
-
-        struct algorithm **alg = NULL;
-        for (alg = ALGS; *alg != NULL; ++alg) {
-            if (strcmp(algorithm, (*alg)->name) == 0)
-                break;
-        }
-
-        if (*alg == NULL)
-        {
-            fprintf(stderr, "Unknown algorithm: %s\n", algorithm);
-            return 1;
-        }
-
-        printf("Running %s with write_bc_ticks=%hu\n", (*alg)->name, write_bc_ticks);
-        bc_prod = (*alg)->func((uint16_t)write_bc_ticks, ff_samples, ff_sample_count, bc_buf, bc_bufmask, algorithm_params);
+        algorithm_params = kv_pair_list_from_string(param_start);
     }
+
+    struct algorithm **alg = NULL;
+    for (alg = ALGS; *alg != NULL; ++alg) {
+        if (strcmp(algorithm, (*alg)->name) == 0)
+            break;
+    }
+
+    if (*alg == NULL)
+    {
+        fprintf(stderr, "Unknown algorithm: %s\n", algorithm);
+        return 1;
+    }
+
+    printf("Running %s with write_bc_ticks=%hu\n", (*alg)->name, write_bc_ticks);
+    bc_prod = (*alg)->func((uint16_t)write_bc_ticks, ff_samples, ff_sample_count, bc_buf, bc_bufmask, algorithm_params);
 
     printf("Decoded %u bitcells\n", bc_prod);
 
