@@ -73,8 +73,14 @@ int main(int argc, const char *const argv[])
 
     const char *const ff_sample_path = argv[1];
     const char *const hfe_path = argv[2];
-    unsigned long hfe_bit_rate_kbps = strtoul(argv[3], NULL, 10);
+    char *endptr = NULL;
+    unsigned long hfe_bit_rate_kbps = strtoul(argv[3], &endptr, 10);
     char * algorithm = strdup(argv[4]);
+
+    if (*endptr != '\0') {
+        fprintf(stderr, "ERROR: hfe-bit-rate-kbps must be a positive integer\n");
+        return 1;
+    }
 
     // Open sample input file
     FILE *ff_sample_fd = fopen(ff_sample_path, "rb");
