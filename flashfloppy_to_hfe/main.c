@@ -8,6 +8,7 @@
 #define BC_BUF_SIZE_BYTES (2 * 1024 * 1024)
 
 #include "algorithm.h"
+#include "kv_pair.h"
 
 #include "fdc9216.h"
 #include "ff_v341.h"
@@ -54,6 +55,10 @@ void usage(const char *const progname)
     for (struct algorithm **alg = ALGS; *alg != NULL; ++alg)
     {
         fprintf(stderr, "\t* %s\n", (*alg)->name);
+        for (const struct parameter* param = (*alg)->params; param != NULL && param->name != NULL; param++) {
+            fprintf(stderr, "\t\t%-20s    %8s    %s\n",
+                param->name, (param->required != 0 ? "required" : ""), param->description);
+        }
     }
 
     exit(1);
@@ -69,7 +74,7 @@ int main(int argc, const char *const argv[])
     const char *const ff_sample_path = argv[1];
     const char *const hfe_path = argv[2];
     unsigned long hfe_bit_rate_kbps = strtoul(argv[3], NULL, 10);
-    const char *const algorithm = argv[4];
+    char * algorithm = strdup(argv[4]);
 
     // Open sample input file
     FILE *ff_sample_fd = fopen(ff_sample_path, "rb");
@@ -135,14 +140,23 @@ int main(int argc, const char *const argv[])
         printf("NCO: Integral/%d, Error/%d\n", integral_div, error_div);
         bc_prod = nco_generic((uint16_t)write_bc_ticks, ff_samples, ff_sample_count, bc_buf, bc_bufmask, integral_div, error_div);
     } else {
+        struct kv_pair *algorithm_params = NULL;
+
+        char *param_start = strchr(algorithm, '[');
+        char *param_end = strrchr(algorithm, ']');
+        if (param_start != NULL && param_end != NULL) {
+            *param_start = '\0';
+            *param_end = '\0';
+
+            param_start++;
+
+            algorithm_params = kv_pair_list_from_string(param_start);
+        }
+
         struct algorithm **alg = NULL;
- 
-        for (alg = ALGS; *alg != NULL; ++alg)
-        {
+        for (alg = ALGS; *alg != NULL; ++alg) {
             if (strcmp(algorithm, (*alg)->name) == 0)
-            {
                 break;
-            }
         }
 
         if (*alg == NULL)
@@ -152,8 +166,7 @@ int main(int argc, const char *const argv[])
         }
 
         printf("Running %s with write_bc_ticks=%hu\n", (*alg)->name, write_bc_ticks);
-        bc_prod = (*alg)->func((uint16_t)write_bc_ticks, ff_samples, ff_sample_count, bc_buf, bc_bufmask);
-
+        bc_prod = (*alg)->func((uint16_t)write_bc_ticks, ff_samples, ff_sample_count, bc_buf, bc_bufmask, algorithm_params);
     }
 
     printf("Decoded %u bitcells\n", bc_prod);

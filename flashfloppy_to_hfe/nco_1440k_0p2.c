@@ -4,7 +4,7 @@
 
 #include "nco_1440k_0p2.h"
 
-uint32_t nco_1440k_0p2(uint16_t write_bc_ticks, uint16_t *ff_samples, size_t ff_sample_count, uint32_t *bc_buf, uint32_t bc_bufmask)
+uint32_t nco_1440k_0p2(uint16_t write_bc_ticks, uint16_t *ff_samples, size_t ff_sample_count, uint32_t *bc_buf, uint32_t bc_bufmask, struct kv_pair *params)
 {
     // dma_wr struct
     uint32_t phase_step;
@@ -136,4 +136,5 @@ uint32_t nco_1440k_0p2(uint16_t write_bc_ticks, uint16_t *ff_samples, size_t ff_
 struct algorithm algorithm_nco_1440k_0p2 = {
     .name = "nco_1440k_0p2",
     .func = nco_1440k_0p2,
+    .params = NULL,
 };

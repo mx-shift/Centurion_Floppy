@@ -4,7 +4,7 @@
 
 #include "fdc9216.h"
 
-uint32_t fdc9216(uint16_t write_bc_ticks, uint16_t *ff_samples, size_t ff_sample_count, uint32_t *bc_buf, uint32_t bc_bufmask)
+uint32_t fdc9216(uint16_t write_bc_ticks, uint16_t *ff_samples, size_t ff_sample_count, uint32_t *bc_buf, uint32_t bc_bufmask, struct kv_pair *params)
 {
     // A PLL that actually adjusts phase gradually
 
@@ -137,4 +137,5 @@ uint32_t fdc9216(uint16_t write_bc_ticks, uint16_t *ff_samples, size_t ff_sample
 struct algorithm algorithm_fdc9216 = {
     .name = "fdc9216",
     .func = fdc9216,
+    .params = NULL,
 };

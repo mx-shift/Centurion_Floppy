@@ -3,7 +3,7 @@
 
 #include "ff_v341.h"
 
-uint32_t ff_v341(uint16_t write_bc_ticks, uint16_t *ff_samples, size_t ff_sample_count, uint32_t *bc_buf, uint32_t bc_bufmask)
+uint32_t ff_v341(uint16_t write_bc_ticks, uint16_t *ff_samples, size_t ff_sample_count, uint32_t *bc_buf, uint32_t bc_bufmask, struct kv_pair *params)
 {
     /* FlashFloppy v3.41 */
     uint16_t cell = write_bc_ticks;
@@ -41,4 +41,5 @@ uint32_t ff_v341(uint16_t write_bc_ticks, uint16_t *ff_samples, size_t ff_sample
 struct algorithm algorithm_ff_v341 = {
     .name = "ff_v341",
     .func = ff_v341,
+    .params = NULL,
 };

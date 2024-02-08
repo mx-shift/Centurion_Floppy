@@ -4,7 +4,7 @@
 
 #include "nco_178k.h"
 
-uint32_t nco_178k(uint16_t write_bc_ticks, uint16_t *ff_samples, size_t ff_sample_count, uint32_t *bc_buf, uint32_t bc_bufmask)
+uint32_t nco_178k(uint16_t write_bc_ticks, uint16_t *ff_samples, size_t ff_sample_count, uint32_t *bc_buf, uint32_t bc_bufmask, struct kv_pair *params)
 {
     // dma_wr struct
     uint32_t phase_step;
@@ -140,4 +140,5 @@ uint32_t nco_178k(uint16_t write_bc_ticks, uint16_t *ff_samples, size_t ff_sampl
 struct algorithm algorithm_nco_178k = {
     .name = "nco_178k",
     .func = nco_178k,
+    .params = NULL,
 };

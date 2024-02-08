@@ -3,7 +3,7 @@
 
 #include "ff_master.h"
 
-uint32_t ff_master(uint16_t write_bc_ticks, uint16_t *ff_samples, size_t ff_sample_count, uint32_t *bc_buf, uint32_t bc_bufmask)
+uint32_t ff_master(uint16_t write_bc_ticks, uint16_t *ff_samples, size_t ff_sample_count, uint32_t *bc_buf, uint32_t bc_bufmask, struct kv_pair *params)
 {
     /* FlashFloppy master */
     int cell = write_bc_ticks;
@@ -44,4 +44,5 @@ uint32_t ff_master(uint16_t write_bc_ticks, uint16_t *ff_samples, size_t ff_samp
 struct algorithm algorithm_ff_master = {
     .name = "ff_master",
     .func = ff_master,
+    .params = NULL,
 };
