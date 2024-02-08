@@ -3,7 +3,13 @@
 
 #include "algorithm_flashfloppy_master.h"
 
-uint32_t flashfloppy_master(uint16_t write_bc_ticks, uint16_t *ff_samples, size_t ff_sample_count, uint32_t *bc_buf, uint32_t bc_bufmask, struct kv_pair *params)
+uint32_t flashfloppy_master(
+    uint16_t write_bc_ticks,
+    uint16_t *ff_samples,
+    size_t ff_sample_count,
+    uint32_t *bc_buf,
+    uint32_t bc_bufmask,
+    struct kv_pair *params)
 {
     /* FlashFloppy master */
     int cell = write_bc_ticks;

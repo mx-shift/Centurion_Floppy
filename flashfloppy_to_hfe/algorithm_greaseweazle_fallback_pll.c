@@ -4,7 +4,13 @@
 
 #include "algorithm_greaseweazle_fallback_pll.h"
 
-uint32_t greaseweazle_fallback_pll(uint16_t write_bc_ticks, uint16_t *ff_samples, size_t ff_sample_count, uint32_t *bc_buf, uint32_t bc_bufmask, struct kv_pair *params)
+uint32_t greaseweazle_fallback_pll(
+    uint16_t write_bc_ticks,
+    uint16_t *ff_samples,
+    size_t ff_sample_count,
+    uint32_t *bc_buf,
+    uint32_t bc_bufmask,
+    struct kv_pair *params)
 {
     /* FlashFloppy master w/ Greaseweazle's Default PLL */
     int cell_nominal = write_bc_ticks;
