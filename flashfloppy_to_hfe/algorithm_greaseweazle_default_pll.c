@@ -13,6 +13,8 @@ static uint32_t greaseweazle_default_pll(
     struct kv_pair *params,
     struct data_logger *logger)
 {
+    uint64_t timestamp = 0;
+
     /* FlashFloppy master w/ Greaseweazle's Default PLL */
     int cell_nominal = write_bc_ticks;
     int cell_min = cell_nominal - (cell_nominal * 10 / 100);
@@ -34,6 +36,7 @@ static uint32_t greaseweazle_default_pll(
             printf("Runt flux\n");
             continue;
         }
+        timestamp += curr;
         prev = next;
 
         uint8_t zeros = 0;
@@ -45,6 +48,8 @@ static uint32_t greaseweazle_default_pll(
             if (!(bc_prod & 31))
                 bc_buf[((bc_prod - 1) / 32) & bc_bufmask] = htobe32(bc_dat);
         }
+        data_logger_event(logger, timestamp, curr);
+
         bc_dat = (bc_dat << 1) | 1;
         bc_prod++;
         if (!(bc_prod & 31))
