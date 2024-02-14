@@ -1,6 +1,6 @@
 CFLAGS=-std=gnu99 -Wall -Werror
 
-LIB_SRCS := kv_pair.c
+LIB_SRCS := data_logger.c kv_pair.c
 ALGORITHM_SRCS := $(wildcard algorithm_*.c)
 
 BINS=flashfloppy_to_hfe kv_test
