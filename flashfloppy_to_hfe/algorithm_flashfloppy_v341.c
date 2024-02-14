@@ -12,6 +12,8 @@ static uint32_t flashfloppy_v341(
     struct kv_pair *params,
     struct data_logger *logger)
 {
+    uint64_t timestamp = 0ULL;
+
     /* FlashFloppy v3.41 */
     uint16_t cell = write_bc_ticks;
     uint16_t window = cell + (cell >> 1);
@@ -24,6 +26,7 @@ static uint32_t flashfloppy_v341(
     {
         uint16_t next = ff_samples[ii];
         uint16_t curr = next - prev;
+        timestamp += curr;
         prev = next;
         while (curr > window)
         {
@@ -33,6 +36,7 @@ static uint32_t flashfloppy_v341(
             if (!(bc_prod & 31))
                 bc_buf[((bc_prod - 1) / 32) & bc_bufmask] = htobe32(bc_dat);
         }
+        data_logger_event(logger, timestamp, curr - cell);
         bc_dat = (bc_dat << 1) | 1;
         bc_prod++;
 
