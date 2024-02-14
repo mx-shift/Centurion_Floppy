@@ -12,6 +12,8 @@ static uint32_t flashfloppy_master(
     struct kv_pair *params,
     struct data_logger *logger)
 {
+    uint64_t timestamp = 0ULL;
+
     /* FlashFloppy master */
     int cell = write_bc_ticks;
 
@@ -29,6 +31,7 @@ static uint32_t flashfloppy_master(
             /* Runt flux, much shorter than bitcell clock. Merge it forward. */
             continue;
         }
+        timestamp += (uint16_t)(next - prev);
         prev = next;
 
         while ((curr -= cell) > 0)
@@ -38,6 +41,9 @@ static uint32_t flashfloppy_master(
             if (!(bc_prod & 31))
                 bc_buf[((bc_prod - 1) / 32) & bc_bufmask] = htobe32(bc_dat);
         }
+
+        data_logger_event(logger, timestamp, curr + (cell >> 1));
+
         bc_dat = (bc_dat << 1) | 1;
         bc_prod++;
         if (!(bc_prod & 31))
