@@ -29,7 +29,7 @@ static struct algorithm *ALGS[] = {
 
 void usage(const char *const progname)
 {
-    fprintf(stderr, "Usage: %s <ff_samples> <hfe_out> <hfe-bit-rate-kbps> <algorithm>\n", progname);
+    fprintf(stderr, "Usage: %s <ff_samples> <hfe-bit-rate-kbps> <algorithm>\n", progname);
     fprintf(stderr, "\n");
     fprintf(stderr, "Algorithms:\n");
 
@@ -47,16 +47,24 @@ void usage(const char *const progname)
 
 int main(int argc, const char *const argv[])
 {
-    if (argc < 5)
+    if (argc < 4)
     {
         usage(argv[0]);
     }
 
     const char *const ff_sample_path = argv[1];
-    const char *const hfe_path = argv[2];
     char *endptr = NULL;
-    unsigned long hfe_bit_rate_kbps = strtoul(argv[3], &endptr, 10);
-    char * algorithm = strdup(argv[4]);
+    unsigned long hfe_bit_rate_kbps = strtoul(argv[2], &endptr, 10);
+    char * algorithm = strdup(argv[3]);
+
+    char * file_prefix = strdup(ff_sample_path);
+    char * suffix = strrchr(file_prefix, '.');
+    if (suffix != NULL && strcmp(suffix, ".ff_samples") == 0) {
+        *suffix = '\0';
+    }
+
+    char *hfe_path;
+    asprintf(&hfe_path, "%s.%ld_%s.hfe", file_prefix, hfe_bit_rate_kbps, algorithm);
 
     if (*endptr != '\0') {
         fprintf(stderr, "ERROR: hfe-bit-rate-kbps must be a positive integer\n");
