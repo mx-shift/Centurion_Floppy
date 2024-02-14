@@ -66,6 +66,9 @@ int main(int argc, const char *const argv[])
     char *hfe_path;
     asprintf(&hfe_path, "%s.%ld_%s.hfe", file_prefix, hfe_bit_rate_kbps, algorithm);
 
+    char *data_log_path;
+    asprintf(&data_log_path, "%s.%ld_%s.csv", file_prefix, hfe_bit_rate_kbps, algorithm);
+
     if (*endptr != '\0') {
         fprintf(stderr, "ERROR: hfe-bit-rate-kbps must be a positive integer\n");
         return 1;
@@ -152,8 +155,17 @@ int main(int argc, const char *const argv[])
         return 1;
     }
 
+    struct data_logger *logger = data_logger_open(data_log_path);
+    if (logger == NULL) {
+        fprintf(stderr, "Failed to open data log \"%s\"", data_log_path);
+        return 1;
+    }
+
     printf("Running %s with write_bc_ticks=%hu\n", (*alg)->name, write_bc_ticks);
-    bc_prod = (*alg)->func((uint16_t)write_bc_ticks, ff_samples, ff_sample_count, bc_buf, bc_bufmask, algorithm_params);
+    bc_prod = (*alg)->func((uint16_t)write_bc_ticks, ff_samples, ff_sample_count, bc_buf, bc_bufmask, algorithm_params, logger);
+
+    data_logger_close(logger);
+    logger = NULL;
 
     printf("Decoded %u bitcells\n", bc_prod);
 

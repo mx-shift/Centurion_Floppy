@@ -10,7 +10,8 @@ static uint32_t fdc9216(
     size_t ff_sample_count,
     uint32_t *bc_buf,
     uint32_t bc_bufmask,
-    struct kv_pair *params)
+    struct kv_pair *params,
+    struct data_logger *logger)
 {
     // A PLL that actually adjusts phase gradually
 

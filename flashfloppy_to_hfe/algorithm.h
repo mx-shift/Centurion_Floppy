@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#include "data_logger.h"
 #include "kv_pair.h"
 
 struct parameter
@@ -22,7 +23,8 @@ struct algorithm
         size_t ff_sample_count,
         uint32_t *bc_buf,
         uint32_t bc_buf_mask,
-        struct kv_pair *params);
+        struct kv_pair *params,
+        struct data_logger *logger);
     const struct parameter *params;
 };
 

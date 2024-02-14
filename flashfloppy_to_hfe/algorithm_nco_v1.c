@@ -28,7 +28,8 @@ static uint32_t nco_v1(
     size_t ff_sample_count,
     uint32_t *bc_buf,
     uint32_t bc_bufmask,
-    struct kv_pair *params)
+    struct kv_pair *params,
+    struct data_logger *logger)
 {
     int p_mul = -1;
     int p_div = -1;

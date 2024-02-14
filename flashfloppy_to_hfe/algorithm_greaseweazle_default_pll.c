@@ -10,7 +10,8 @@ static uint32_t greaseweazle_default_pll(
     size_t ff_sample_count,
     uint32_t *bc_buf,
     uint32_t bc_bufmask,
-    struct kv_pair *params)
+    struct kv_pair *params,
+    struct data_logger *logger)
 {
     /* FlashFloppy master w/ Greaseweazle's Default PLL */
     int cell_nominal = write_bc_ticks;

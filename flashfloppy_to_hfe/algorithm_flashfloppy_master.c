@@ -9,7 +9,8 @@ static uint32_t flashfloppy_master(
     size_t ff_sample_count,
     uint32_t *bc_buf,
     uint32_t bc_bufmask,
-    struct kv_pair *params)
+    struct kv_pair *params,
+    struct data_logger *logger)
 {
     /* FlashFloppy master */
     int cell = write_bc_ticks;
