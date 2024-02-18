@@ -14,6 +14,7 @@ static uint32_t greaseweazle_default_pll(
     struct data_logger *logger)
 {
     uint64_t timestamp = 0;
+    data_logger_set_timestamp_freq(logger, 72000000);
 
     /* FlashFloppy master w/ Greaseweazle's Default PLL */
     int cell_nominal = write_bc_ticks;

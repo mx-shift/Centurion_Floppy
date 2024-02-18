@@ -13,6 +13,7 @@ static uint32_t flashfloppy_master(
     struct data_logger *logger)
 {
     uint64_t timestamp = 0ULL;
+    data_logger_set_timestamp_freq(logger, 72000000);
 
     /* FlashFloppy master */
     int cell = write_bc_ticks;
