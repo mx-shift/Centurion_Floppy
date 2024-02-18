@@ -85,6 +85,9 @@ static uint32_t nco_v1(
         return 0;
     }
 
+    uint64_t timestamp = 0ULL;
+    data_logger_set_timestamp_freq(logger, 72000000);
+
     // dma_wr struct
     uint32_t phase_step;
     int32_t phase_integral;
@@ -103,6 +106,10 @@ static uint32_t nco_v1(
 
     for (int ii = 0; ii < ff_sample_count; ++ii)
     {
+        if (ii > 0) {
+            timestamp += (uint16_t)(ff_samples[ii] - ff_samples[ii-1]);
+        }
+
         // Scale the NCO frequency to the expected data frequency
         uint32_t bc_step = phase_step * (uint32_t)write_bc_ticks;
 
@@ -164,6 +171,8 @@ static uint32_t nco_v1(
 
         // Figure out the phase error before we start mucking with state
         int32_t phase_error = ((int32_t)distance_from_curr_bc_left - ((int32_t)bc_step / 2)) / (int32_t)write_bc_ticks;
+
+        data_logger_event(logger, timestamp, phase_error);
 
         // printf("Phase Error: %8d ", phase_error);
 
