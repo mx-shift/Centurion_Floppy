@@ -56,7 +56,7 @@ for PRECOMP in 0 100 200 300 350 400; do
   mkdir -p ${HFE_DIR}
   ${FLASHFLOPPY_TO_HFE_BIN} \
     ${FF_SAMPLE_DIR}/${BASE}*${TRACK}.${SIDE}.revolution1.ff_samples \
-    ${HFE_DIR}/${HFE_DIR} \
+    ${HFE_DIR} \
     ${HFE_BITRATE} \
     ${ALG}
 done

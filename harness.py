@@ -39,10 +39,10 @@ def check_algorithm(integral_div, error_div):
     print(f'Checking I={integral_div} E={error_div}')
     if os.path.isfile('out/a.hfe'):
         os.remove('out/a.hfe')
-    s = run(f'./flashfloppy_to_hfe/flashfloppy_to_hfe out/00.0.revolution1.ff_samples out/a.hfe 500 nco_v1[p_mul=1,p_div={error_div},i_mul=1,i_div={integral_div}]')
-    if not os.path.isfile('out/a.hfe'):
+    s = run(f'./flashfloppy_to_hfe/flashfloppy_to_hfe out/00.0.revolution1.ff_samples out/ 500 nco_v1[p_mul=1,p_div={error_div},i_mul=1,i_div={integral_div}]')
+    if not os.path.isfile(f'out/00.0.revolution1.500_nco_v1[p_mul=1,p_div={error_div},i_mul=1,i_div={integral_div}].hfe'):
         return False
-    s = run('gw convert out/a.hfe out/a.img --format=ibm.1440 --tracks=c=0:h=0')
+    s = run(f'gw convert out/00.0.revolution1.500_nco_v1[p_mul=1,p_div={error_div},i_mul=1,i_div={integral_div}].hfe out/a.img --format=ibm.1440 --tracks=c=0:h=0')
     m = re.search(r'Found (\d+) sectors of 18', s)
     return int(m.group(1)) == 18
 

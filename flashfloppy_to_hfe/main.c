@@ -1,5 +1,6 @@
 #include <endian.h>
 #include <errno.h>
+#include <libgen.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,7 +30,7 @@ static struct algorithm *ALGS[] = {
 
 void usage(const char *const progname)
 {
-    fprintf(stderr, "Usage: %s <ff_samples> <hfe-bit-rate-kbps> <algorithm>\n", progname);
+    fprintf(stderr, "Usage: %s <ff_samples> <out-dir> <hfe-bit-rate-kbps> <algorithm>\n", progname);
     fprintf(stderr, "\n");
     fprintf(stderr, "Algorithms:\n");
 
@@ -53,21 +54,22 @@ int main(int argc, const char *const argv[])
     }
 
     const char *const ff_sample_path = argv[1];
+    const char *const out_dir = argv[2];
     char *endptr = NULL;
-    unsigned long hfe_bit_rate_kbps = strtoul(argv[2], &endptr, 10);
-    char * algorithm = strdup(argv[3]);
+    unsigned long hfe_bit_rate_kbps = strtoul(argv[3], &endptr, 10);
+    char * algorithm = strdup(argv[4]);
 
-    char * file_prefix = strdup(ff_sample_path);
+    char * file_prefix = basename(strdup(ff_sample_path));
     char * suffix = strrchr(file_prefix, '.');
     if (suffix != NULL && strcmp(suffix, ".ff_samples") == 0) {
         *suffix = '\0';
     }
 
     char *hfe_path;
-    asprintf(&hfe_path, "%s.%ld_%s.hfe", file_prefix, hfe_bit_rate_kbps, algorithm);
+    asprintf(&hfe_path, "%s/%s.%ld_%s.hfe", out_dir, file_prefix, hfe_bit_rate_kbps, algorithm);
 
     char *data_log_path;
-    asprintf(&data_log_path, "%s.%ld_%s.csv", file_prefix, hfe_bit_rate_kbps, algorithm);
+    asprintf(&data_log_path, "%s/%s.%ld_%s.csv", out_dir, file_prefix, hfe_bit_rate_kbps, algorithm);
 
     if (*endptr != '\0') {
         fprintf(stderr, "ERROR: hfe-bit-rate-kbps must be a positive integer\n");
