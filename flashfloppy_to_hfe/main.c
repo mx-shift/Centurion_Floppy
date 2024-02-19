@@ -17,6 +17,7 @@
 #include "algorithm_greaseweazle_default_pll.h"
 #include "algorithm_greaseweazle_fallback_pll.h"
 #include "algorithm_nco_v1.h"
+#include "algorithm_nco_v2.h"
 
 static struct algorithm *ALGS[] = {
     &algorithm_fdc9216,
@@ -25,6 +26,7 @@ static struct algorithm *ALGS[] = {
     &algorithm_greaseweazle_default_pll,
     &algorithm_greaseweazle_fallback_pll,
     &algorithm_nco_v1,
+    &algorithm_nco_v2,
     NULL
 };
 
