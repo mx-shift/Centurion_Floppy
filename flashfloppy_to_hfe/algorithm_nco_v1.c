@@ -172,7 +172,7 @@ static uint32_t nco_v1(
         // Figure out the phase error before we start mucking with state
         int32_t phase_error = ((int32_t)distance_from_curr_bc_left - ((int32_t)bc_step / 2)) / (int32_t)write_bc_ticks;
 
-        data_logger_event(logger, timestamp, phase_error);
+        data_logger_event(logger, timestamp, (double)phase_error*(double)write_bc_ticks/65536.0);
 
         // printf("Phase Error: %8d ", phase_error);
 
