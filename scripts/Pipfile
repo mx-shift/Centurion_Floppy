@@ -1,0 +1,17 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+greaseweazle = {git = "https://github.com/keirf/greaseweazle"}
+setuptools = "*"
+click = "*"
+pandas = "*"
+pyarrow = "*"
+jinja2 = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.12"
