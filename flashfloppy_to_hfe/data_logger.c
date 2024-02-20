@@ -40,9 +40,9 @@ void data_logger_close(struct data_logger *logger) {
 void data_logger_event(
     struct data_logger *logger,
     uint64_t timestamp,
-    int32_t phase_error
+    double phase_error
 ) {
-    fprintf(logger->fd, "%f,%"PRId32"\n",
+    fprintf(logger->fd, "%f,%f\n",
         (double)timestamp/(double)logger->timestamp_freq_hz,
         phase_error);
 }

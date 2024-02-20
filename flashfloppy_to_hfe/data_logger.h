@@ -13,7 +13,7 @@ void data_logger_set_timestamp_freq(struct data_logger *logger, uint64_t freq_hz
 void data_logger_event(
     struct data_logger *logger,
     uint64_t timestamp,
-    int32_t phase_error
+    double phase_error
 );
 
 #endif
