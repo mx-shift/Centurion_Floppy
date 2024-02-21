@@ -27,12 +27,15 @@ def summarize_results(result_file):
             .to_string()
         )
 
+        print('Parameters with largest coverage:')
+        group_by_coverage = alg_data.groupby(["p_div", "i_div"]).size()
+        for (p_div, i_div) in group_by_coverage[group_by_coverage == group_by_coverage.max()].index.to_list():
+            print(f'  p_mul=1, p_div={p_div}, i_mul=1, i_div={i_div}')
+        print('=' * 60)
+
         [(p_div, i_div)] = (
             alg_data.groupby(["p_div", "i_div"]).size().nlargest(1).index.to_list()
         )
-
-        print(f'Parameters with largest coverage: p_div={p_div}, i_mul=1, i_div={i_div}')
-        print('=' * 60)
         print(
             alg_data.loc[(alg_data['p_div'] == p_div) & (alg_data['i_div'] == i_div)]
             .groupby(['Rate (kbps)', 'Precomp (ns)'], as_index=False)
