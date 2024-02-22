@@ -14,6 +14,7 @@ class Format:
     sectors_per_cylinder: int
     bytes_per_sector: int
     data_rate_kbps: int
+    rpm: int
 
     def sectors(self):
         return self.heads * self.cylinders * self.sectors_per_cylinder
@@ -25,7 +26,8 @@ FORMATS=[
         cylinders=40,
         sectors_per_cylinder=9,
         bytes_per_sector=512,
-        data_rate_kbps=250
+        data_rate_kbps=250,
+        rpm=300
     ),
     Format(
         'ibm1440',
@@ -33,7 +35,17 @@ FORMATS=[
         cylinders=80,
         sectors_per_cylinder=18,
         bytes_per_sector=512,
-        data_rate_kbps=500
+        data_rate_kbps=500,
+        rpm=300
+    ),
+    Format(
+        'ibm.ed',
+        heads=2,
+        cylinders=80,
+        sectors_per_cylinder=18,
+        bytes_per_sector=512,
+        data_rate_kbps=1000,
+        rpm=600
     )
 ]
 
@@ -69,6 +81,7 @@ disk {format.name}.{rate}
         bps = {format.bytes_per_sector}
         gap3 = 84
         rate = {rate}
+        rpm = {format.rpm}
     end
 end'''
     with open(cfg_filename, 'w') as f:
