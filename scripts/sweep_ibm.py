@@ -64,6 +64,18 @@ class Algorithm:
 
 ALGORITHMS = [
     Algorithm(
+        name='flashfloppy_master',
+        p_div_range = range(1),
+        i_div_range = range(1),
+        name_format = 'flashfloppy_master'
+    ),
+    Algorithm(
+        name='greaseweazle_default_pll',
+        p_div_range = range(1),
+        i_div_range = range(1),
+        name_format = 'greaseweazle_default_pll'
+    ),
+    Algorithm(
         name='nco_v1',
         p_div_range = range(2, 18),
         i_div_range = range(4, 20),
