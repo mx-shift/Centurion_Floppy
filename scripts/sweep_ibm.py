@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import click
 import csv
 import itertools
 import os
@@ -180,8 +181,17 @@ def check_algorithm(format, algorithm, proportial_div, integral_div, out_dir):
         print('fail')
         return (proportial_div, integral_div, False)
 
-
-def main(argv):
+@click.command()
+@click.option(
+    '--algorithm', '-a',
+    type=click.Choice(
+        [algorithm.name for algorithm in ALGORITHMS],
+        case_sensitive=False
+    ),
+    default=[algorithm.name for algorithm in ALGORITHMS],
+    multiple=True
+)
+def main(algorithm):
     out_dir = f'out'
 
     if not os.path.isdir(out_dir):
@@ -202,13 +212,13 @@ def main(argv):
                     for precomp in range(PRECOMP_MIN, PRECOMP_MAX + 1, 50):
                         print(f'Generating {rate} @{precomp}')
                         generate_ff(precomp, out_dir)
-                        for algorithm in ALGORITHMS:
-                            for (p_div, i_div, result) in pool.starmap(check_algorithm, [(format, algorithm, (1 << i_div), (1 << p_div), out_dir) for (i_div, p_div) in itertools.product(algorithm.p_div_range, algorithm.i_div_range)]):
+                        for curr_algorithm in [x for x in ALGORITHMS if x.name in algorithm]:
+                            for (p_div, i_div, result) in pool.starmap(check_algorithm, [(format, curr_algorithm, (1 << i_div), (1 << p_div), out_dir) for (i_div, p_div) in itertools.product(curr_algorithm.p_div_range, curr_algorithm.i_div_range)]):
                                 if result:
-                                    resultwriter.writerow([rate, precomp, algorithm.name, p_div, i_div])
+                                    resultwriter.writerow([rate, precomp, curr_algorithm.name, p_div, i_div])
 
 if __name__ == '__main__':
-    main(sys.argv)
+    main()
 
 # Local variables:
 # python-indent: 4
