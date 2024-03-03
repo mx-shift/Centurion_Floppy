@@ -1,7 +1,20 @@
-#include "algorithm_nco_v1.h"
+#include "algorithm_bitcell_width_pi_v1.h"
 
 #include <stdio.h>
 #include <string.h>
+
+// WARNING
+//
+// This version uses extremely confusing terminology throughout the
+// implementation.  It is _not_ a PLL.  It does _not_ use an NCO.  It does _not_
+// adjust frequency (at least directly). There is _no_ phase accumulator.  This
+// version is kept only as a reference for developing v2 which refactors this
+// implementation using correct terminology and description of the behavior.
+//
+// What this implementation actually does is apply a PI control loop adjusting
+// bitcell _width_ based on the distance of a WDATA# edge from the center of the
+// bitcell.  Because bitcell width is being constantly adjusted, a 1-sample
+// history is kept to determine the next bitcell's start time.
 
 static int parse_param_integer(const char *value, int *dst)
 {
@@ -22,7 +35,7 @@ static int parse_param_integer(const char *value, int *dst)
     return 0;
 }
 
-static uint32_t nco_v1(
+static uint32_t bitcell_width_pi_v1(
     uint16_t write_bc_ticks,
     uint16_t *ff_samples,
     size_t ff_sample_count,
@@ -45,7 +58,7 @@ static uint32_t nco_v1(
         {
             if (parse_param_integer(param->value, &p_mul) < 0)
             {
-                fprintf(stderr, "nco parameter %s must be a positive integer\n", param->key);
+                fprintf(stderr, "bitcell_width_pi parameter %s must be a positive integer\n", param->key);
                 return 0;
             }
         }
@@ -53,7 +66,7 @@ static uint32_t nco_v1(
         {
             if (parse_param_integer(param->value, &p_div) < 0)
             {
-                fprintf(stderr, "nco parameter %s must be a positive integer\n", param->key);
+                fprintf(stderr, "bitcell_width_pi parameter %s must be a positive integer\n", param->key);
                 return 0;
             }
         }
@@ -61,7 +74,7 @@ static uint32_t nco_v1(
         {
             if (parse_param_integer(param->value, &i_mul) < 0)
             {
-                fprintf(stderr, "nco parameter %s must be a positive integer\n", param->key);
+                fprintf(stderr, "bitcell_width_pi parameter %s must be a positive integer\n", param->key);
                 return 0;
             }
         }
@@ -69,19 +82,19 @@ static uint32_t nco_v1(
         {
             if (parse_param_integer(param->value, &i_div) < 0)
             {
-                fprintf(stderr, "nco parameter %s must be a positive integer\n", param->key);
+                fprintf(stderr, "bitcell_width_pi parameter %s must be a positive integer\n", param->key);
                 return 0;
             }
         }
         else
         {
-            fprintf(stderr, "nco: unknown parameter %s\n", param->key);
+            fprintf(stderr, "bitcell_width_pi: unknown parameter %s\n", param->key);
         }
     }
 
     if (p_mul == -1 || p_div == -1 || i_mul == -1 || i_div == -1)
     {
-        fprintf(stderr, "nco_v1: required parameters not set\n");
+        fprintf(stderr, "bitcell_width_pi_v1: required parameters not set\n");
         return 0;
     }
 
@@ -205,15 +218,15 @@ static uint32_t nco_v1(
     return bc_prod;
 }
 
-static struct parameter nco_v1_params[] = {
+static struct parameter bitcell_width_pi_v1_params[] = {
     {.name = "p_mul", .required = 1, .description = "f"},
     {.name = "p_div", .required = 1, .description = ""},
     {.name = "i_mul", .required = 1, .description = ""},
     {.name = "i_div", .required = 1, .description = ""},
     {.name = NULL, .description = NULL}};
 
-struct algorithm algorithm_nco_v1 = {
-    .name = "nco_v1",
-    .func = nco_v1,
-    .params = nco_v1_params,
+struct algorithm algorithm_bitcell_width_pi_v1 = {
+    .name = "bitcell_width_pi_v1",
+    .func = bitcell_width_pi_v1,
+    .params = bitcell_width_pi_v1_params,
 };

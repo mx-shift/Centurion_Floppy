@@ -11,24 +11,20 @@
 #include "algorithm.h"
 #include "kv_pair.h"
 
+#include "algorithm_bitcell_width_pi_v1.h"
 #include "algorithm_fdc9216.h"
 #include "algorithm_flashfloppy_v341.h"
 #include "algorithm_flashfloppy_master.h"
 #include "algorithm_greaseweazle_default_pll.h"
 #include "algorithm_greaseweazle_fallback_pll.h"
-#include "algorithm_nco_v1.h"
-#include "algorithm_nco_v2.h"
-#include "algorithm_nco_v3.h"
 
 static struct algorithm *ALGS[] = {
+    &algorithm_bitcell_width_pi_v1,
     &algorithm_fdc9216,
     &algorithm_flashfloppy_v341,
     &algorithm_flashfloppy_master,
     &algorithm_greaseweazle_default_pll,
     &algorithm_greaseweazle_fallback_pll,
-    &algorithm_nco_v1,
-    &algorithm_nco_v2,
-    &algorithm_nco_v3,
     NULL
 };
 
