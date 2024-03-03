@@ -210,8 +210,8 @@ int main(int argc, const char *const argv[])
         /* Number of tracks */ 0x1,
         /* Number of sides */ 0x1,
         /* Track encoding */ 0xFF /* Unknown */,
-        /* Bitrate (kbps) */ hfe_bit_rate_kbps,
-        0x01, /* 500 */
+        /* Bitrate (kbps) */ hfe_bit_rate_kbps & 0xFF,
+        (hfe_bit_rate_kbps >> 8) & 0xFF,
         /* RPM */ 0x00,
         0x00,
         /* Interface mode */ 0x07 /* GENERIC_SHUGGART_DD_FLOPPYMODE */,
