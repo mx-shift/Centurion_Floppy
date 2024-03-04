@@ -81,6 +81,12 @@ ALGORITHMS = [
         p_div_range = range(2, 18),
         i_div_range = range(4, 20),
         name_format = 'bitcell_width_pi_v1[p_mul=1,p_div={p_div},i_mul=1,i_div={i_div}]'
+    ),
+    Algorithm(
+        name='bitcell_width_pi_v2',
+        p_div_range = range(2, 18),
+        i_div_range = range(4, 20),
+        name_format = 'bitcell_width_pi_v2[p_mul=1,p_div={p_div},i_mul=1,i_div={i_div}]'
     )
 ]
 

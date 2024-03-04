@@ -12,6 +12,7 @@
 #include "kv_pair.h"
 
 #include "algorithm_bitcell_width_pi_v1.h"
+#include "algorithm_bitcell_width_pi_v2.h"
 #include "algorithm_fdc9216.h"
 #include "algorithm_flashfloppy_v341.h"
 #include "algorithm_flashfloppy_master.h"
@@ -20,6 +21,7 @@
 
 static struct algorithm *ALGS[] = {
     &algorithm_bitcell_width_pi_v1,
+    &algorithm_bitcell_width_pi_v2,
     &algorithm_fdc9216,
     &algorithm_flashfloppy_v341,
     &algorithm_flashfloppy_master,
