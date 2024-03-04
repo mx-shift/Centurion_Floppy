@@ -185,7 +185,16 @@ def check_algorithm(format, algorithm, proportial_div, integral_div, out_dir):
     default=[algorithm.name for algorithm in ALGORITHMS],
     multiple=True
 )
-def main(algorithm):
+@click.option(
+    '--jobs', '-j',
+    is_flag=False,
+    default=1,
+    flag_value=0
+)
+def main(algorithm, jobs):
+    if jobs == 0:
+        jobs = None
+
     out_dir = f'out'
 
     if not os.path.isdir(out_dir):
@@ -195,7 +204,7 @@ def main(algorithm):
         resultwriter = csv.writer(f)
         resultwriter.writerow(['Rate (kbps)', 'Precomp (ns)', 'Algorithm', 'p_div', 'i_div'])
 
-        with Pool(48) as pool:
+        with Pool(processes=jobs) as pool:
             for format in FORMATS:
                 data_rate_min = round(format.data_rate_kbps*.92/5) * 5
                 data_rate_max = round(format.data_rate_kbps*1.08/5) * 5
